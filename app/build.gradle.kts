@@ -73,4 +73,8 @@ dependencies {
     //Navigation
     val nav_version = "2.8.4"
     implementation("androidx.navigation:navigation-compose:$nav_version")
+
+    // Mockito
+    testImplementation(libs.mockito.core) 
+    androidTestImplementation(libs.mockito.android)
 }
