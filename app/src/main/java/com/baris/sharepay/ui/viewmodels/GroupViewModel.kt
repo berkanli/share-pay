@@ -33,4 +33,8 @@ class GroupViewModel(private val groupDao: GroupDao) : ViewModel() {
             _groups.value = groupDao.getAllGroups()
         }
     }
+
+    suspend fun getGroupById(groupId: String): Group? {
+        return groupDao.getGroupById(groupId)
+    }
 }

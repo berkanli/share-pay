@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.baris.sharepay.ui.viewmodels.GroupViewModel
 
@@ -21,6 +22,7 @@ import com.baris.sharepay.ui.viewmodels.GroupViewModel
 fun CreateGroupScreen(viewModel: GroupViewModel, onNavigate: (String) -> Unit) {
     var groupName by remember { mutableStateOf("") }
     var memberList by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf("") }
 
     Column(modifier = Modifier.padding(16.dp)) {
         TextField(
@@ -37,15 +39,24 @@ fun CreateGroupScreen(viewModel: GroupViewModel, onNavigate: (String) -> Unit) {
             interactionSource = remember { MutableInteractionSource() }
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Button(
-            onClick = {
-                val members = memberList.split(",").map { it.trim() }
-                val id = viewModel.addGroup(groupName, members)
-                onNavigate(id)
-            },
-            interactionSource = remember { MutableInteractionSource() }
-        ) {
-            Text("Create Group", onTextLayout = {})
+        if (errorMessage.isNotEmpty()) {
+            Text(text = errorMessage, color = Color.Red)
+        }
+        Button(onClick = {
+            if (groupName.isEmpty()) {
+                errorMessage = "Group Name cannot be empty"
+                return@Button
+            }
+            if (memberList.isEmpty()) {
+                errorMessage = "At least one member is required"
+                return@Button
+            }
+            val members = memberList.split(",").map { it.trim() }
+            val id = viewModel.addGroup(groupName, members)
+            errorMessage = ""
+            onNavigate(id)
+        }) {
+            Text("Create Group")
         }
     }
 }

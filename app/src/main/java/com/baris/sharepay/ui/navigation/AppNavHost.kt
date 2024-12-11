@@ -11,6 +11,8 @@ import androidx.navigation.navArgument
 import com.baris.sharepay.data.DatabaseProvider
 import com.baris.sharepay.ui.screens.AddExpenseScreen
 import com.baris.sharepay.ui.screens.CreateGroupScreen
+import com.baris.sharepay.ui.screens.DashboardScreen
+import com.baris.sharepay.ui.screens.GroupDetailsScreen
 import com.baris.sharepay.ui.viewmodels.ExpenseViewModel
 import com.baris.sharepay.ui.viewmodels.GroupViewModel
 import com.baris.sharepay.ui.viewmodels.ViewModelFactory
@@ -21,13 +23,22 @@ fun AppNavHost(navController: NavHostController) {
     val database = DatabaseProvider.getDatabase(context)
     val viewModelFactory = ViewModelFactory(database)
 
-    NavHost(navController, startDestination = "createGroup") {
+    NavHost(navController, startDestination = "dashboard") {
+        composable("dashboard") {
+            val groupViewModel: GroupViewModel = viewModel(factory = viewModelFactory)
+            DashboardScreen(groupViewModel, navController)
+        }
         composable("createGroup") {
             val groupViewModel: GroupViewModel = viewModel(factory = viewModelFactory)
 
             CreateGroupScreen(groupViewModel) { groupId ->
                 navController.navigate("addExpense/$groupId")
             }
+        }
+        composable("groupDetails/{groupId}") { backStackEntry ->
+            val groupId = backStackEntry.arguments?.getString("groupId") ?: ""
+            val groupViewModel: GroupViewModel = viewModel(factory = viewModelFactory)
+            GroupDetailsScreen(groupId = groupId, groupViewModel = groupViewModel)
         }
         composable(
             route = "addExpense/{groupId}",
