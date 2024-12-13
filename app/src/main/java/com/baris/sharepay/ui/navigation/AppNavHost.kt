@@ -10,11 +10,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.baris.sharepay.data.DatabaseProvider
 import com.baris.sharepay.ui.screens.AddExpenseScreen
+import com.baris.sharepay.ui.screens.ContactsScreen
 import com.baris.sharepay.ui.screens.CreateGroupScreen
 import com.baris.sharepay.ui.screens.DashboardScreen
 import com.baris.sharepay.ui.screens.GroupDetailsScreen
 import com.baris.sharepay.ui.viewmodels.ExpenseViewModel
 import com.baris.sharepay.ui.viewmodels.GroupViewModel
+import com.baris.sharepay.ui.viewmodels.UserViewModel
 import com.baris.sharepay.ui.viewmodels.ViewModelFactory
 
 @Composable
@@ -38,7 +40,7 @@ fun AppNavHost(navController: NavHostController) {
         composable("groupDetails/{groupId}") { backStackEntry ->
             val groupId = backStackEntry.arguments?.getString("groupId") ?: ""
             val groupViewModel: GroupViewModel = viewModel(factory = viewModelFactory)
-            GroupDetailsScreen(groupId = groupId, groupViewModel = groupViewModel)
+            GroupDetailsScreen(groupId = groupId, groupViewModel = groupViewModel, navController)
         }
         composable(
             route = "addExpense/{groupId}",
@@ -50,6 +52,11 @@ fun AppNavHost(navController: NavHostController) {
             groupId?.let {
                 AddExpenseScreen(expenseViewModel, groupId = it)
             }
+        }
+        composable("contacts/{userId}") { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId") ?: ""
+            val userViewModel: UserViewModel = viewModel(factory = viewModelFactory)
+            ContactsScreen(userViewModel = userViewModel, currentUserId = userId)
         }
     }
 }

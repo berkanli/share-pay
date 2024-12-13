@@ -29,7 +29,6 @@ import com.baris.sharepay.ui.viewmodels.GroupViewModel
 
 @Composable
 fun CreateGroupDialog(
-    viewModel: GroupViewModel,
     onDismiss: (String, List<String>) -> Unit
 ) {
     var groupName by remember { mutableStateOf("") }
@@ -84,12 +83,6 @@ fun CreateGroupDialog(
                         return@Button
                     }
                     val members = memberList.split(",").map { it.trim() }
-//                    val group = Group(
-//                        id = java.util.UUID.randomUUID().toString(),
-//                        name = groupName,
-//                        members = members
-//                    )
-//                    viewModel.addGroup(groupName, members)
                     errorMessage = ""
                     onDismiss(groupName, members)
                 }) {

@@ -1,6 +1,7 @@
 package com.baris.sharepay.ui.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,16 +11,22 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.baris.sharepay.data.model.Group
 
 @Composable
-fun GroupCard(group: Group, onClick: () -> Unit) {
+fun GroupCard(group: Group, onClick: () -> Unit, onLongClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .clickable { onClick() },
+            .clickable { onClick() }
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onLongPress = { onLongClick() }
+                )
+            },
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(

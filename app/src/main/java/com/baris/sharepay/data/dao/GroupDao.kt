@@ -1,6 +1,7 @@
 package com.baris.sharepay.data.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.baris.sharepay.data.model.Group
@@ -15,4 +16,7 @@ interface GroupDao {
 
     @Query("SELECT * FROM groups")
     suspend fun getAllGroups(): List<Group>
+
+    @Query("DELETE FROM groups WHERE id = :groupId")
+    suspend fun deleteGroupById(groupId: String)
 }

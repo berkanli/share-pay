@@ -8,10 +8,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,8 +32,10 @@ import com.baris.sharepay.ui.viewmodels.GroupViewModel
 
 @Composable
 fun DashboardScreen(groupViewModel: GroupViewModel, navController: NavHostController) {
-    var groups by remember { mutableStateOf(listOf<Group>()) }
     var showDialog by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var selectedGroup by remember { mutableStateOf<Group?>(null) }
+    val groups by groupViewModel.groups.collectAsState(initial = emptyList())
 
     LaunchedEffect(Unit) {
         groupViewModel.fetchAllGroups()
@@ -43,7 +49,14 @@ fun DashboardScreen(groupViewModel: GroupViewModel, navController: NavHostContro
     ) {
         LazyColumn {
             items(groups) { group ->
-                GroupCard(group = group, onClick = { navController.navigate("groupDetails/${group.id}") })
+                GroupCard(
+                    group = group,
+                    onClick = { navController.navigate("groupDetails/${group.id}") },
+                    onLongClick = {
+                        selectedGroup = group
+                        showDeleteDialog = true
+                    }
+                )
             }
         }
     }
@@ -61,7 +74,6 @@ fun DashboardScreen(groupViewModel: GroupViewModel, navController: NavHostContro
         if (showDialog) {
             Dialog(onDismissRequest = { showDialog = false }) {
                 CreateGroupDialog(
-                    viewModel = groupViewModel,
                     onDismiss = { name, members ->
                         if (name.isNotEmpty() && members.isNotEmpty()) {
                             groupViewModel.addGroup(name, members)
@@ -70,6 +82,32 @@ fun DashboardScreen(groupViewModel: GroupViewModel, navController: NavHostContro
                     }
                 )
             }
+        }
+        if (showDeleteDialog && selectedGroup != null) {
+            AlertDialog(
+                onDismissRequest = { showDeleteDialog = false },
+                title = { Text("Delete Group") },
+                text = { Text("Are you sure you want to delete ${selectedGroup?.name}?") },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            selectedGroup?.let { group ->
+                                groupViewModel.deleteGroup(group)
+                            }
+                            showDeleteDialog = false
+                        }
+                    ) {
+                        Text("Delete")
+                    }
+                },
+                dismissButton = {
+                    Button(
+                        onClick = { showDeleteDialog = false }
+                    ) {
+                        Text("Cancel")
+                    }
+                }
+            )
         }
     }
 }
