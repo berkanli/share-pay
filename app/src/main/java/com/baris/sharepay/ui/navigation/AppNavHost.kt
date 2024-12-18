@@ -20,7 +20,7 @@ import com.baris.sharepay.ui.viewmodels.UserViewModel
 import com.baris.sharepay.ui.viewmodels.ViewModelFactory
 
 @Composable
-fun AppNavHost(navController: NavHostController) {
+fun AppNavHost(navController: NavHostController, currentUserId: String) {
     val context = LocalContext.current
     val database = DatabaseProvider.getDatabase(context)
     val viewModelFactory = ViewModelFactory(database)
@@ -28,19 +28,29 @@ fun AppNavHost(navController: NavHostController) {
     NavHost(navController, startDestination = "dashboard") {
         composable("dashboard") {
             val groupViewModel: GroupViewModel = viewModel(factory = viewModelFactory)
-            DashboardScreen(groupViewModel, navController)
+            val userViewModel: UserViewModel = viewModel(factory = viewModelFactory)
+            DashboardScreen(userViewModel, groupViewModel, navController, currentUserId)
         }
-        composable("createGroup") {
-            val groupViewModel: GroupViewModel = viewModel(factory = viewModelFactory)
-
-            CreateGroupScreen(groupViewModel) { groupId ->
-                navController.navigate("addExpense/$groupId")
-            }
-        }
+//        composable("createGroup") {
+//            val groupViewModel: GroupViewModel = viewModel(factory = viewModelFactory)
+//
+//            CreateGroupScreen(groupViewModel) { groupId ->
+//                navController.navigate("addExpense/$groupId")
+//            }
+//        }
         composable("groupDetails/{groupId}") { backStackEntry ->
             val groupId = backStackEntry.arguments?.getString("groupId") ?: ""
             val groupViewModel: GroupViewModel = viewModel(factory = viewModelFactory)
-            GroupDetailsScreen(groupId = groupId, groupViewModel = groupViewModel, navController)
+            val userViewModel: UserViewModel = viewModel(factory = viewModelFactory)
+            val expenseViewModel: ExpenseViewModel = viewModel(factory = viewModelFactory)
+            GroupDetailsScreen(
+                groupId = groupId,
+                groupViewModel = groupViewModel,
+                expenseViewModel = expenseViewModel,
+                navController = navController,
+                userViewModel = userViewModel,
+                currentUserId = currentUserId
+            )
         }
         composable(
             route = "addExpense/{groupId}",

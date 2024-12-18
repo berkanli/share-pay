@@ -25,14 +25,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.baris.sharepay.data.model.Group
+import com.baris.sharepay.data.model.User
 import com.baris.sharepay.ui.viewmodels.GroupViewModel
 
 @Composable
 fun CreateGroupDialog(
-    onDismiss: (String, List<String>) -> Unit
+    onDismiss: (String) -> Unit
 ) {
     var groupName by remember { mutableStateOf("") }
-    var memberList by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
 
     Surface(
@@ -58,12 +58,6 @@ fun CreateGroupDialog(
                 onValueChange = { groupName = it },
                 label = { Text("Group Name") }
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            TextField(
-                value = memberList,
-                onValueChange = { memberList = it },
-                label = { Text("Members (comma-separated)") }
-            )
             Spacer(modifier = Modifier.height(16.dp))
             if (errorMessage.isNotEmpty()) {
                 Text(text = errorMessage, color = Color.Red)
@@ -78,18 +72,13 @@ fun CreateGroupDialog(
                         errorMessage = "Group Name cannot be empty"
                         return@Button
                     }
-                    if (memberList.isEmpty()) {
-                        errorMessage = "At least one member is required"
-                        return@Button
-                    }
-                    val members = memberList.split(",").map { it.trim() }
                     errorMessage = ""
-                    onDismiss(groupName, members)
+                    onDismiss(groupName)
                 }) {
                     Text("Create")
                 }
                 Spacer(modifier = Modifier.width(8.dp))
-                Button(onClick = { onDismiss("", emptyList()) }) {
+                Button(onClick = { onDismiss("") }) {
                     Text("Cancel")
                 }
             }

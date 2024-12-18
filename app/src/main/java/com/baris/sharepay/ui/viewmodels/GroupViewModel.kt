@@ -15,11 +15,11 @@ class GroupViewModel(private val groupDao: GroupDao) : ViewModel() {
     private val _groups = MutableStateFlow<List<Group>>(emptyList())
     val groups: StateFlow<List<Group>> get() = _groups
 
-    fun addGroup(name: String, members: List<User>): String {
+    fun addGroup(name: String, creator: User): String {
         val group = Group(
             id = UUID.randomUUID().toString(),
             name = name,
-            members = members
+            members = listOf(creator)
         )
         viewModelScope.launch {
             groupDao.insert(group)
@@ -43,5 +43,19 @@ class GroupViewModel(private val groupDao: GroupDao) : ViewModel() {
 
     suspend fun getGroupById(groupId: String): Group? {
         return groupDao.getGroupById(groupId)
+    }
+
+    fun addFriendToGroup(groupId: String, friend: User) {
+        viewModelScope.launch {
+            val group = groupDao.getGroupById(groupId)
+            if (group != null) {
+                val updatedMembers = group.members.toMutableList().apply {
+                    add(friend)
+                }
+                val updatedGroup = group.copy(members = updatedMembers)
+                groupDao.updateGroup(updatedGroup)
+                fetchAllGroups()
+            }
+        }
     }
 }

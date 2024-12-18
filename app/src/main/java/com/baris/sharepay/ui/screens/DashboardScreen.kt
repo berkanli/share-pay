@@ -1,7 +1,9 @@
 package com.baris.sharepay.ui.screens
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,23 +21,30 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.baris.sharepay.data.model.Group
 import com.baris.sharepay.ui.components.CreateGroupDialog
 import com.baris.sharepay.ui.components.GroupCard
 import com.baris.sharepay.ui.viewmodels.GroupViewModel
+import com.baris.sharepay.ui.viewmodels.UserViewModel
+import kotlinx.coroutines.launch
 
 @Composable
-fun DashboardScreen(groupViewModel: GroupViewModel, navController: NavHostController) {
+fun DashboardScreen(userViewModel: UserViewModel, groupViewModel: GroupViewModel, navController: NavController, currentUserId: String) {
     var showDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var selectedGroup by remember { mutableStateOf<Group?>(null) }
     val groups by groupViewModel.groups.collectAsState(initial = emptyList())
+    val coroutineScope = rememberCoroutineScope()
+    //HARDCODED
+    val id = userViewModel.addUser("user", "user@gmail.com")
 
     LaunchedEffect(Unit) {
         groupViewModel.fetchAllGroups()
@@ -47,6 +56,7 @@ fun DashboardScreen(groupViewModel: GroupViewModel, navController: NavHostContro
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         LazyColumn {
             items(groups) { group ->
                 GroupCard(
@@ -74,9 +84,12 @@ fun DashboardScreen(groupViewModel: GroupViewModel, navController: NavHostContro
         if (showDialog) {
             Dialog(onDismissRequest = { showDialog = false }) {
                 CreateGroupDialog(
-                    onDismiss = { name, members ->
-                        if (name.isNotEmpty() && members.isNotEmpty()) {
-                            groupViewModel.addGroup(name, members)
+                    onDismiss = { name ->
+                        if (name.isNotEmpty()) {
+                            coroutineScope.launch {
+                                val creator = userViewModel.getUserById(id)
+                                groupViewModel.addGroup(name, creator!!)
+                            }
                         }
                         showDialog = false
                     }
@@ -92,7 +105,7 @@ fun DashboardScreen(groupViewModel: GroupViewModel, navController: NavHostContro
                     Button(
                         onClick = {
                             selectedGroup?.let { group ->
-                                groupViewModel.deleteGroup(group)
+                                groupViewModel.deleteGroup(group.id)
                             }
                             showDeleteDialog = false
                         }

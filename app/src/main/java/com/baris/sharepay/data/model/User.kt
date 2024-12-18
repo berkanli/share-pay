@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class User(
     @PrimaryKey val id: String,
     val name: String,
-    val email: String,
-    val friends: String // This will store a JSON string of List<User>
+    val email: String = "",
+    val phone: String = "",
+    val friends: List<String> = emptyList()
 )

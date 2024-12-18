@@ -9,6 +9,7 @@ class ViewModelFactory(private val database: SplitwiseDatabase) : ViewModelProvi
         return when {
             modelClass.isAssignableFrom(GroupViewModel::class.java) -> GroupViewModel(database.groupDao()) as T
             modelClass.isAssignableFrom(ExpenseViewModel::class.java) -> ExpenseViewModel(database.expenseDao()) as T
+            modelClass.isAssignableFrom(UserViewModel::class.java) -> UserViewModel(database.userDao()) as T
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         }
     }

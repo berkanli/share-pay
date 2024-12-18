@@ -1,5 +1,6 @@
 package com.baris.sharepay
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -20,12 +21,16 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        val sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        val currentUserId = sharedPreferences.getString("user_id", "user") ?: "user"
+
         setContent {
             SharePayTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Column(modifier = Modifier.padding(innerPadding)) {
                         val navController = rememberNavController()
-                        AppNavHost(navController)
+                        AppNavHost(navController, currentUserId)
                     }
                 }
             }

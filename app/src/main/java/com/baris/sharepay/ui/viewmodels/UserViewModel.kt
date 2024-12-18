@@ -21,7 +21,7 @@ class UserViewModel(private val userDao: UserDao) : ViewModel() {
             id = UUID.randomUUID().toString(),
             name = name,
             email = email,
-            friends = "[]" // Initialize with an empty list
+            friends = emptyList() // Initialize with an empty list
         )
         viewModelScope.launch {
             userDao.insert(user)
@@ -36,19 +36,14 @@ class UserViewModel(private val userDao: UserDao) : ViewModel() {
         }
     }
 
-    fun addFriend(userId: String, name: String, email: String) {
+    fun addFriend(userId: String, friendId: String) {
         viewModelScope.launch {
             val user = userDao.getUserById(userId)
             user?.let {
-                val friends = gson.fromJson<List<User>>(it.friends, object : TypeToken<List<User>>() {}.type)
-                val newContact = User(
-                    id = UUID.randomUUID().toString(),
-                    name = name,
-                    email = email,
-                    friends = "[]" // Initialize with an empty list
-                )
-                val updatedFriends = (friends + newContact).distinctBy { it.id }
-                val updatedUser = it.copy(friends = gson.toJson(updatedFriends))
+                val updatedFriends = it.friends.toMutableList().apply {
+                    add(friendId)
+                }
+                val updatedUser = it.copy(friends = updatedFriends)
                 userDao.updateUser(updatedUser)
                 fetchAllUsers()
             }

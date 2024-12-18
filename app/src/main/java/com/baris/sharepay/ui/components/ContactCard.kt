@@ -14,9 +14,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.baris.sharepay.data.model.User
+import com.baris.sharepay.ui.viewmodels.UserViewModel
 
 @Composable
-fun ContactCard(contact: User) {
+fun ContactCard(userViewModel: UserViewModel, friendId: String,) {
+    val contact = userViewModel.getUserById(friendId)
     Card(
         modifier = Modifier
             .fillMaxWidth()

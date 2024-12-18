@@ -10,6 +10,7 @@ import com.baris.sharepay.data.dao.ExpenseDao
 import com.baris.sharepay.data.dao.GroupDao
 import com.baris.sharepay.data.model.Expense
 import com.baris.sharepay.data.model.Group
+import com.baris.sharepay.data.model.User
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.After
@@ -38,7 +39,7 @@ class ExampleDatabaseTest {
 
     @Test
     fun testInsertAndFetchGroup() = runBlocking {
-        val group = Group(id = "1", name = "Trip", members = listOf("Alice", "Bob"))
+        val group = Group(id = "1", name = "Trip", members = listOf<User>())
         groupDao.insert(group)
 
         val groups = groupDao.getAllGroups()

@@ -11,7 +11,7 @@ import com.baris.sharepay.data.model.Expense
 import com.baris.sharepay.data.model.Group
 import com.baris.sharepay.data.model.User
 
-@Database(entities = [Group::class, Expense::class, User::class], version = 1)
+@Database(entities = [Group::class, Expense::class, User::class], version = 2)
 @TypeConverters(Converters::class)
 abstract class SplitwiseDatabase : RoomDatabase() {
     abstract fun groupDao(): GroupDao

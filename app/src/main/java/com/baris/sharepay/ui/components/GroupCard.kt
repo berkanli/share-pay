@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.baris.sharepay.data.model.Group
 
@@ -21,11 +22,13 @@ fun GroupCard(group: Group, onClick: () -> Unit, onLongClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .clickable { onClick() }
             .pointerInput(Unit) {
                 detectTapGestures(
                     onLongPress = { onLongClick() }
                 )
+            }
+            .clickable(role = Role.Button){
+                onClick()
             },
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
@@ -33,6 +36,7 @@ fun GroupCard(group: Group, onClick: () -> Unit, onLongClick: () -> Unit) {
             modifier = Modifier.padding(16.dp)
         ) {
             Text(text = group.name, style = MaterialTheme.typography.bodyMedium)
+            Text(text = group.id, style = MaterialTheme.typography.bodyMedium)
         }
     }
 }

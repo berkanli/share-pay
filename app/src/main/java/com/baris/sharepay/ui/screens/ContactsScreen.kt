@@ -47,10 +47,10 @@ fun ContactsScreen(userViewModel: UserViewModel, currentUserId: String) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         currentUser?.let { user ->
-            val friends = gson.fromJson<List<User>>(user.friends, object : TypeToken<List<User>>() {}.type)
+            val friends = user.friends
             LazyColumn {
-                items(friends) { contact ->
-                    ContactCard(contact = contact)
+                items(friends) { friendId ->
+                    ContactCard(userViewModel, friendId)
                 }
             }
         }

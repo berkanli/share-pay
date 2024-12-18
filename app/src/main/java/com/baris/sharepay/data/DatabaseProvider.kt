@@ -14,7 +14,7 @@ object DatabaseProvider {
                         context.applicationContext,
                         SplitwiseDatabase::class.java,
                         "splitwise_db"
-                    ).build()
+                    ).fallbackToDestructiveMigration().build()
                 }
             }
         }
