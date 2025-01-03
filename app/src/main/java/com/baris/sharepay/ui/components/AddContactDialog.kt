@@ -15,38 +15,31 @@ import androidx.compose.material3.*
 
 
 @Composable
-fun AddContactDialog(onDismiss: (String, String) -> Unit) {
-    var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
+fun AddContactDialog(onDismiss: (String) -> Unit) {
+    var friendId by remember { mutableStateOf("") }
 
     AlertDialog(
-        onDismissRequest = { onDismiss("", "") },
+        onDismissRequest = { onDismiss("") },
         confirmButton = {
-            TextButton(onClick = { onDismiss(name, email) }) {
+            TextButton(onClick = { onDismiss(friendId) }) {
                 Text("Add")
             }
         },
         dismissButton = {
-            TextButton(onClick = { onDismiss("", "") }) {
+            TextButton(onClick = { onDismiss("") }) {
                 Text("Cancel")
             }
         },
-        title = { Text("Add New Contact") },
+        title = { Text("Add New Friend") },
         text = {
             Column(
                 modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    label = { Text("Name") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                OutlinedTextField(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = { Text("Email") },
+                    value = friendId,
+                    onValueChange = { friendId = it },
+                    label = { Text("Friend ID") },
                     modifier = Modifier.fillMaxWidth()
                 )
             }

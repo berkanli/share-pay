@@ -69,9 +69,9 @@ fun ContactsScreen(userViewModel: UserViewModel, currentUserId: String) {
         if (showDialog) {
             Dialog(onDismissRequest = { showDialog = false }) {
                 AddContactDialog(
-                    onDismiss = { name, email ->
-                        if (name.isNotEmpty() && email.isNotEmpty()) {
-                            userViewModel.addFriend(currentUserId, name, email)
+                    onDismiss = { friendId ->
+                        if (friendId.isNotEmpty()) {
+                            userViewModel.addFriend(currentUserId, friendId)
                         }
                         showDialog = false
                     }

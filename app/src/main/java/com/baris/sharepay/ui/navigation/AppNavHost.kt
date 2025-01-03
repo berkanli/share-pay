@@ -14,6 +14,7 @@ import com.baris.sharepay.ui.screens.ContactsScreen
 import com.baris.sharepay.ui.screens.CreateGroupScreen
 import com.baris.sharepay.ui.screens.DashboardScreen
 import com.baris.sharepay.ui.screens.GroupDetailsScreen
+import com.baris.sharepay.ui.screens.SettingsScreen
 import com.baris.sharepay.ui.viewmodels.ExpenseViewModel
 import com.baris.sharepay.ui.viewmodels.GroupViewModel
 import com.baris.sharepay.ui.viewmodels.UserViewModel
@@ -38,6 +39,10 @@ fun AppNavHost(navController: NavHostController, currentUserId: String) {
 //                navController.navigate("addExpense/$groupId")
 //            }
 //        }
+
+        composable("settings") {
+            SettingsScreen(navController)
+        }
         composable("groupDetails/{groupId}") { backStackEntry ->
             val groupId = backStackEntry.arguments?.getString("groupId") ?: ""
             val groupViewModel: GroupViewModel = viewModel(factory = viewModelFactory)
